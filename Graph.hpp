@@ -1,46 +1,61 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
-#include "Edge.hpp"
+#include "Vertex.hpp"
+
 using namespace std;
 
 class Graph {
 
 	private:
 		vector<Vertex*> V;
-		vector<Edge*> A;
 
 	public:
-		Graph(std::vector<Vertex*> vertices, std::vector<Edge*> arestas) {
+		Graph(std::vector<Vertex*> vertices) {
 			V = vertices;
-			A = arestas;
 		}
 		void addVertex(Vertex* v) {
 			V.push_back(v);
 		}
 		void removeVertex(Vertex* v) {
-			for (unsigned i = 0; i < V.size(); ++i) {
-				if (V.at(i) == v) {
-					delete(V.at(i));
-					V.erase(V.begin()+i);
-					//REMOVER A ARESTA TAMBÉM.
-					break;
-				}
+			V.erase(remove(V.begin(), V.end(), v), V.end());
+			//REMOVER LIGAÇÕES
+			vector<Vertex*> onesWhoRequire = v->getReqsTo(); //A lista de vertices que tem v como pre req
+			vector<Vertex*> onesRequired = v->getPreReq(); //A lista de vertices são pre requisitos de v.
+
+			for (auto* posReq : onesWhoRequire) {
+				posReq->removeV1(v);
 			}
+			for (auto* preReq: onesRequired) {
+				preReq->removeV2(v);
+			}
+
+			delete v;
 		}
 		void connect(Vertex* v1, Vertex* v2) {
-			Edge* e = new Edge();
-			e->connectVertex(v1, v2);
-			A.push_back(e);
+			v1->setReqTo(v2);
+			v2->setPreReq(v1);
 		}
+
+		void disconnect(Vertex* v1, Vertex* v2) {
+			v1->removeV2(v2);
+			v2->removeV1(v1);
+		}
+
 		vector<Vertex*> retornaVertices() {
 			return V;
 		}
-		vector<Edge*> retornaArestas() {
-			return A;
-		} 
 
 
+		void printaVertices() {
+			for (auto i = 0U; i < V.size(); ++i) {
+				string t = V.at(i)->getCode();
+				cout << "Os prereq de "+t+ " são: " << endl;
+				V.at(i)->getReqs();
+				cout << "E "+t+ " é pre req de "  << endl;
+				V.at(i)->getReqTo();
+			}
+		}
 };
 
 #endif
