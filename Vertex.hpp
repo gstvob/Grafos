@@ -48,6 +48,22 @@ class Vertex {
 			return preReq;
 		}
 
+		vector<Vertex*> adj() {
+			std::vector<Vertex*> adj;
+			adj.insert(adj.end(), reqTo.begin(), reqTo.end());
+			adj.insert(adj.end(), preReq.begin(), preReq.end());
+			return adj;
+		}
+
+		int grauEnt() {
+			return preReq.size();
+		}
+
+		int grauSaida() {
+			return reqTo.size();
+		}
+
+		//FUNÇÕES PARA TESTES
 		void getReqs() {
 			for(auto i = 0U; i < preReq.size(); i++) {
 				auto t = preReq.at(i)->getCode();

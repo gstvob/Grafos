@@ -20,13 +20,53 @@ int main() {
 	G->connect(v3,v4);
 	G->connect(v2,v4);
 
+	/*
+
+		V1->v2->v4
+			   /
+			  /
+		     /
+		  v3/
+	*/
+
 
 	/*TESTE DAS OPERAÇÕES*/
-	v = G->retornaVertices();
+	v = G->vertices();
 	G->printaVertices();
+	
+	printf("\n");
+	printf("\n");
+	
 	G->removeVertex(v2);
 	G->disconnect(v2, v4);
 	G->printaVertices();
+
+	printf("\n");
+	printf("\n");
+
+	/*
+
+		V1     v4
+			   /
+			  /
+		     /
+		  v3/
+	*/
+
+	std::cout << G->ordem() << std::endl;
+	std::cout << G->grau(v3) << std::endl;
+	std::cout << G->grau(v4) << std::endl;
+	std::cout << G->grau(v1) << std::endl;
+	printf("\n");
+
+	std::vector<Vertex*> adj = G->adjacentes(v4);
+
+	for (auto i = 0U; i < adj.size(); ++i) {
+		string t = adj.at(i)->getCode();
+		std::cout << t << endl;
+	}
+
+
 	delete(G);
 	return 0;
 }

@@ -42,10 +42,27 @@ class Graph {
 			v2->removeV1(v1);
 		}
 
-		vector<Vertex*> retornaVertices() {
+		int ordem() {
+			return V.size();
+		}
+
+		vector<Vertex*> vertices() {
 			return V;
 		}
 
+		Vertex* umVertice();
+
+		vector<Vertex*> adjacentes(Vertex* v) {
+			return v->adj();
+		}
+
+		int grau(Vertex* v) {
+			//grau de entrada.
+			int pR = v->grauEnt();
+			//grau de saída.
+			int rT = v->grauSaida();
+			return pR+rT;
+		}
 
 		void printaVertices() {
 			for (auto i = 0U; i < V.size(); ++i) {
