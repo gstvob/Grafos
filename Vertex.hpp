@@ -11,16 +11,17 @@ class Vertex {
 
 		
 	private:
-		int grau;
 		string code;
+		int creditos;
 		vector<Vertex*> preReq;
 		vector<Vertex*> reqTo;
 
 	public:
 		Vertex() {}
-		Vertex(string disc) {
+		Vertex(string disc, int _creditos) {
 			code = disc;
-			grau = 0;
+			creditos = _creditos;
+
 		}
 		string getCode() {
 			return code;

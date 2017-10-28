@@ -1,6 +1,9 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
+#include <stdlib.h>
+#include <time.h>
+#include <list>
 #include "Vertex.hpp"
 
 using namespace std;
@@ -29,8 +32,6 @@ class Graph {
 			for (auto* preReq: onesRequired) {
 				preReq->removeV2(v);
 			}
-
-			delete v;
 		}
 		void connect(Vertex* v1, Vertex* v2) {
 			v1->setReqTo(v2);
@@ -50,7 +51,11 @@ class Graph {
 			return V;
 		}
 
-		Vertex* umVertice();
+		Vertex* umVertice() {
+			srand(time(NULL));
+			int r = rand() % ordem();
+			return V.at(r);
+		}
 
 		vector<Vertex*> adjacentes(Vertex* v) {
 			return v->adj();
@@ -62,6 +67,25 @@ class Graph {
 			//grau de saída.
 			int rT = v->grauSaida();
 			return pR+rT;
+		}
+
+
+		std::vector<Vertex*> topologicalOrder() {
+			//tira os fontes
+			//coloca na lista
+			std::vector<Vertex*> topo;
+			while(V.size() > 0) {
+
+				for(auto it = V.begin(); it != V.end(); ++it) {
+					if ((*it)->grauEnt() == 0) {
+						topo.push_back(*it);
+						removeVertex(*it);
+						break;
+					}
+				}
+			}
+			return topo;
+
 		}
 
 		void printaVertices() {
