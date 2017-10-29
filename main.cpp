@@ -1,18 +1,84 @@
 #include "Graph.hpp"
 
 Graph* buildGraph();
+/*
+	Instruções de uso
+	g++ main.cpp -o arquivodesaida -std=c++17 -Wall
+	./arquivodesaida discCursada1 discCursada2 .... discCursadaN
+	RESPEITANDO OS PRE REQUISITOS SEMPRE.
+	aonde as discCursadas são os códigos de disciplina
+	ex: INE5401
+	INE5413
+	etc..
+*/
+int main(int argc, char** argv) {
 
-int main() {
-
+	
 	std::vector<Vertex*> v;
+	
+	/*
+		G tem o grafo do currículo inteiro do curso.
+		v tem os vertices desse grafo (as disciplinas).
+	*/
 	Graph* G = buildGraph();
-
+	v = G->vertices();
+	
+	/*
+		Realiza a verificação na qual tira do grafo as disciplinas já cursadas
+		conforme os códigos das mesmas foram digitados no
+	*/
+	if(argc > 1) {
+		for(int i = 1; i < argc; i++) {
+			for (auto it = v.begin(); it != v.end(); ++it) {
+				if ((*it)->getCode() == argv[i]) {
+					std::cout << "removendo disciplina " << argv[i] << std::endl;
+					G->removeVertex(*it);
+					break;
+				}
+			}
+		}
+	}
+	
+	v = G->vertices();
+	//std::vector<Vertex*> topologico = G->topologicalOrder();
+	
+	/*
+		Para o plano de curso de matérias o algoritmo simplesmente
+		vai pegando as fontes, colocando em um auxiliar, printando na tela.
+		depois quando todas as fontes forem encontradas e mostradas, elas são
+		removidas do grafo e começa tudo denovo.
+	*/
+	printf("PLANO DE CURSO, PARTINDO DO SEMESTE DE 18-1\n");
+	int i = 1;
+	int carga = 0;
+	std::vector<Vertex*> semestre;
+	printf("%dº semestre:\n", i);
+	while(!(v.empty())) {
+		for (auto i = 0U; i < v.size(); ++i) {
+			Vertex* q = v.at(i);
+			if ((carga+q->getCreditos() <= 30) && q->grauEnt() == 0) {
+				semestre.push_back(q);
+				carga += q->getCreditos();
+				std::cout << q->getCode() << std::endl;
+			} 
+		}
+		for (auto r : semestre) {
+			G->removeVertex(r);
+		}
+		carga = 0;
+		i++;
+		semestre.clear();
+		printf("%dº semestre:\n", i);
+		v = G->vertices();
+	}
 
 	delete(G);
 	return 0;
 }
 
-
+/*
+	Construindo grafo do currículo de computação
+*/
 Graph* buildGraph() {
 	std::vector<Vertex*> v;
 	Graph* g = new Graph(v);
